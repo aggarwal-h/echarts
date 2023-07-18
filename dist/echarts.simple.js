@@ -29032,18 +29032,15 @@
       connectedGroups[groupId] = true;
       return groupId;
     }
-    /**
-     * @deprecated
-     */
-
-    function disConnect(groupId) {
+    function disconnect(groupId) {
       connectedGroups[groupId] = false;
     }
     /**
      * Alias and backward compatibility
+     * @deprecated
      */
 
-    var disconnect = disConnect;
+    var disConnect = disconnect;
     /**
      * Dispose a chart instance
      */

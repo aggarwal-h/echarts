@@ -30034,18 +30034,15 @@
       connectedGroups[groupId] = true;
       return groupId;
     }
-    /**
-     * @deprecated
-     */
-
-    function disConnect(groupId) {
+    function disconnect(groupId) {
       connectedGroups[groupId] = false;
     }
     /**
      * Alias and backward compatibility
+     * @deprecated
      */
 
-    var disconnect = disConnect;
+    var disConnect = disconnect;
     /**
      * Dispose a chart instance
      */
@@ -49418,7 +49415,7 @@
           var inputAxisInfo = findInputAxisInfo(inputAxesInfo, axisInfo);
           var triggerOnNull = axisInfo.triggerOnNull; // If no inputAxesInfo, no axis is restricted.
 
-          if (triggerOnNull || !shouldHide && coordSysContainsPoint && (!inputAxesInfo || inputAxisInfo)) {
+          if (coordSysContainsPoint && (triggerOnNull || !shouldHide && (!inputAxesInfo || inputAxisInfo))) {
             var val = inputAxisInfo && inputAxisInfo.value;
 
             if (val == null && !isIllegalPoint) {
