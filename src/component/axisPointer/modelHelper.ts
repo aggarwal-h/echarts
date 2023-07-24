@@ -51,6 +51,7 @@ interface AxisInfo {
     triggerTooltip: boolean
     triggerEmphasis: boolean
     triggerOnNull: boolean
+    findPointOnConnectedCharts: boolean
     involveSeries: boolean
     snap: boolean
     useHandle: boolean
@@ -200,6 +201,7 @@ function collectAxesInfo(result: CollectionResult, ecModel: GlobalModel, api: Ex
             const snap = axisPointerModel.get('snap');
             const triggerEmphasis = axisPointerModel.get('triggerEmphasis');
             const triggerOnNull = axisPointerModel.get('triggerOnNull');
+            const findPointOnConnectedCharts = axisPointerModel.get('findPointOnConnectedCharts');
             const axisKey = makeKey(axis.model);
             const involveSeries = triggerTooltip || snap || axis.type === 'category';
 
@@ -212,6 +214,7 @@ function collectAxesInfo(result: CollectionResult, ecModel: GlobalModel, api: Ex
                 triggerTooltip: triggerTooltip,
                 triggerEmphasis: triggerEmphasis,
                 triggerOnNull: triggerOnNull,
+                findPointOnConnectedCharts: findPointOnConnectedCharts,
                 involveSeries: involveSeries,
                 snap: snap,
                 useHandle: isHandleTrigger(axisPointerModel),
