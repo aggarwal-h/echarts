@@ -48897,6 +48897,7 @@
           var snap = axisPointerModel.get('snap');
           var triggerEmphasis = axisPointerModel.get('triggerEmphasis');
           var triggerOnNull = axisPointerModel.get('triggerOnNull');
+          var findPointOnConnectedCharts = axisPointerModel.get('findPointOnConnectedCharts');
           var axisKey = makeKey(axis.model);
           var involveSeries = triggerTooltip || snap || axis.type === 'category'; // If result.axesInfo[key] exist, override it (tooltip has higher priority).
 
@@ -48908,6 +48909,7 @@
             triggerTooltip: triggerTooltip,
             triggerEmphasis: triggerEmphasis,
             triggerOnNull: triggerOnNull,
+            findPointOnConnectedCharts: findPointOnConnectedCharts,
             involveSeries: involveSeries,
             snap: snap,
             useHandle: isHandleTrigger(axisPointerModel),
@@ -75145,6 +75147,7 @@
         triggerTooltip: true,
         triggerEmphasis: true,
         triggerOnNull: false,
+        findPointOnConnectedCharts: true,
         value: null,
         status: null,
         link: [],
@@ -75414,18 +75417,21 @@
      */
 
     function axisTrigger(payload, ecModel, api) {
+      var axisPointerComponent = ecModel.getComponent('axisPointer');
       var currTrigger = payload.currTrigger;
       var point = [payload.x, payload.y];
       var finder = payload;
       var dispatchAction = payload.dispatchAction || bind(api.dispatchAction, api);
-      var coordSysAxesInfo = ecModel.getComponent('axisPointer').coordSysAxesInfo; // Pending
+      var coordSysAxesInfo = axisPointerComponent.coordSysAxesInfo; // Pending
       // See #6121. But we are not able to reproduce it yet.
 
       if (!coordSysAxesInfo) {
         return;
       }
 
-      if (illegalPoint(point)) {
+      var findPointOnConnectedCharts = axisPointerComponent.option.findPointOnConnectedCharts;
+
+      if (illegalPoint(point) && findPointOnConnectedCharts) {
         // Used in the default behavior of `connection`: use the sample seriesIndex
         // and dataIndex. And also used in the tooltipView trigger.
         point = findPointFromSeries({
@@ -75678,6 +75684,7 @@
     function dispatchTooltipActually(dataByCoordSys, point, payload, dispatchAction) {
       // Basic logic: If no showTip required, hideTip will be dispatched.
       if (illegalPoint(point) || !dataByCoordSys.list.length) {
+        // console.log(dataByCoordSys);
         dispatchAction({
           type: 'hideTip'
         });
