@@ -90,6 +90,7 @@ class AxisPointerModel extends ComponentModel<AxisPointerOption> {
         triggerTooltip: true,
         triggerEmphasis: true,
         triggerOnNull: false,
+        findPointOnConnectedCharts: true,
 
         value: null,
         status: null, // Init value depends on whether handle is used.

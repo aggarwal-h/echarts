@@ -113,12 +113,13 @@ export default function axisTrigger(
     ecModel: GlobalModel,
     api: ExtensionAPI
 ) {
+    const axisPointerComponent = ecModel.getComponent('axisPointer') as AxisPointerModel;
+
     const currTrigger = payload.currTrigger;
     let point = [payload.x, payload.y];
     const finder = payload;
     const dispatchAction = payload.dispatchAction || bind(api.dispatchAction, api);
-    const coordSysAxesInfo = (ecModel.getComponent('axisPointer') as AxisPointerModel)
-        .coordSysAxesInfo as CollectedCoordInfo;
+    const coordSysAxesInfo = axisPointerComponent.coordSysAxesInfo as CollectedCoordInfo;
 
     // Pending
     // See #6121. But we are not able to reproduce it yet.
@@ -126,7 +127,9 @@ export default function axisTrigger(
         return;
     }
 
-    if (illegalPoint(point)) {
+    const findPointOnConnectedCharts = axisPointerComponent.option.findPointOnConnectedCharts;
+
+    if (illegalPoint(point) && findPointOnConnectedCharts) {
         // Used in the default behavior of `connection`: use the sample seriesIndex
         // and dataIndex. And also used in the tooltipView trigger.
         point = findPointFromSeries({
@@ -421,6 +424,7 @@ function dispatchTooltipActually(
 ) {
     // Basic logic: If no showTip required, hideTip will be dispatched.
     if (illegalPoint(point) || !dataByCoordSys.list.length) {
+        // console.log(dataByCoordSys);
         dispatchAction({type: 'hideTip'});
         return;
     }
