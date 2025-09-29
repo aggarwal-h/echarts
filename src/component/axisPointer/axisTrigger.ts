@@ -113,6 +113,7 @@ export default function axisTrigger(
     ecModel: GlobalModel,
     api: ExtensionAPI
 ) {
+    const axisPointerComponent = ecModel.getComponent('axisPointer') as AxisPointerModel;
     const currTrigger = payload.currTrigger;
     let point = [payload.x, payload.y];
     const finder = payload;
@@ -126,7 +127,9 @@ export default function axisTrigger(
         return;
     }
 
-    if (illegalPoint(point)) {
+    const findPointOnConnectedCharts = axisPointerComponent.option.findPointOnConnectedCharts;
+
+    if (illegalPoint(point) && findPointOnConnectedCharts) {
         // Used in the default behavior of `connection`: use the sample seriesIndex
         // and dataIndex. And also used in the tooltipView trigger.
         point = findPointFromSeries({
@@ -166,13 +169,14 @@ export default function axisTrigger(
         each(coordSysAxesInfo.coordSysAxesInfo[coordSysKey], function (axisInfo, key) {
             const axis = axisInfo.axis;
             const inputAxisInfo = findInputAxisInfo(inputAxesInfo, axisInfo);
+            const triggerOnNull = axisInfo.triggerOnNull;
             // If no inputAxesInfo, no axis is restricted.
-            if (!shouldHide && coordSysContainsPoint && (!inputAxesInfo || inputAxisInfo)) {
+            if (coordSysContainsPoint && (triggerOnNull || (!shouldHide && (!inputAxesInfo || inputAxisInfo)))) {
                 let val = inputAxisInfo && inputAxisInfo.value;
                 if (val == null && !isIllegalPoint) {
                     val = axis.pointToData(point);
                 }
-                val != null && processOnAxis(axisInfo, val, updaters, false, outputPayload);
+                (triggerOnNull || val != null) && processOnAxis(axisInfo, val, updaters, false, outputPayload);
             }
         });
     });

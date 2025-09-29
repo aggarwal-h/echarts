@@ -1675,6 +1675,10 @@ export interface CommonAxisPointerOption {
 
     triggerEmphasis?: boolean
 
+    triggerOnNull?: boolean
+
+    findPointOnConnectedCharts?: boolean
+
     /**
      * current value. When using axisPointer.handle, value can be set to define the initial position of axisPointer.
      */
